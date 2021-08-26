@@ -47,15 +47,17 @@
         </label>
       </div>
       <div class="calculateArea">
-        <button class="calculateButton">Calculate</button>
+        <button :style="[buttonDisabled ? disabledStyle : '']" :disabled="buttonDisabled" @click="interestCalculation()"
+                class="calculateButton">Calculate
+        </button>
       </div>
     </div>
   </div>
-  <div class="calculateResult">
+  <div class="calculateResult" v-show="result !== 0">
     <span class="title">Calculation Result</span>
     <label class="outText">
       If you invested ${{ capital }} now,
-      {{ termValue }} {{ term }} later, you get <span class="resultText">{{ result }}</span>
+      {{ termValue }} {{ term }} later, you get <span class="resultText">${{ result }}</span>
     </label>
   </div>
 </template>
@@ -75,7 +77,48 @@ export default {
       ],
       termValue: 0,
       term: 'Year',
-      result: 0
+      result: 0,
+      disabledStyle: {
+        background: '#cccccc'
+      }
+    }
+  },
+  methods: {
+    interestCalculation() {
+      const result = this.capital * Math.pow((1 + this.rate * 0.01), this.computedTermValue);
+      this.result = parseInt(result);
+    }
+  },
+  computed: {
+    computedTermValue() {
+      if (this.rateType === 'Yearly') {
+        if (this.term === 'Year') {
+          return this.termValue
+        } else if (this.term === 'Month') {
+          return this.termValue / 12;
+        } else {
+          return this.termValue / 360;
+        }
+      } else if (this.rateType === 'Monthly') {
+        if (this.term === 'Year') {
+          return this.termValue * 12;
+        } else if (this.term === 'Month') {
+          return this.termValue;
+        } else {
+          return this.termValue / 30;
+        }
+      } else {
+        if (this.term === 'Year') {
+          return this.termValue * 360;
+        } else if (this.term === 'Month') {
+          return this.termValue * 12;
+        } else {
+          return this.termValue;
+        }
+      }
+    },
+    buttonDisabled() {
+      return this.termValue == 0 || this.rate == 0 || this.result === null
     }
   }
 }
@@ -217,7 +260,7 @@ export default {
   text-align: center;
 }
 
-.resultText{
+.resultText {
   font-weight: 600;
   font-size: 18px;
 }

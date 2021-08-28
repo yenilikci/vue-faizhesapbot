@@ -1,4 +1,7 @@
-# vue-faizhesapbot
+# vue-interest-calculator
+
+![interest-calculator](https://user-images.githubusercontent.com/57464067/131223354-46c37028-5d4e-4b3b-99ea-a8332ea27ab6.png)
+
 
 ## Project setup
 ```
